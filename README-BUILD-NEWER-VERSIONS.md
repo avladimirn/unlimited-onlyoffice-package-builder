@@ -42,8 +42,8 @@ Make sure to download this document, make a copy of it and edit it.
 Now you can find and replace the following:
 
 - Find all the `avladimirn` strings and replace them to your Github organisation/user. Example: `acmeoo`.
-- Find all the `test` strings and replace them to your branding (no spaces or fancy characters). Example: `acme`. This will be used for both Git tags and Debian package suffix.
-- Find all the `BUILDER` strings and replace them to your docker enabled user. Example: `oobuilder`.
+- Find all the `corp` strings and replace them to your branding (no spaces or fancy characters). Example: `acme`. This will be used for both Git tags and Debian package suffix.
+- Find all the `root` strings and replace them to your docker enabled user. Example: `oobuilder`.
 - Given a **x.y.z.t** version that you want to build: ( Example: `8.1.2.3` )
   - Find all the `9.0.4` strings and replace them to **x.y.z**. Example: `8.1.2`
   - Find all the `50` strings and replace them to **t**. Example: `3`
@@ -216,7 +216,7 @@ We create a new branch based on the recently fetched tag.
 
 ```
 cd ~/onlyoffice_repos/build_tools
-git checkout tags/v9.0.4.50 -b 9.0.4.50-test
+git checkout tags/v9.0.4.50 -b 9.0.4.50-corp
 ```
 
 Cherry-pick what we already had:
@@ -230,7 +230,7 @@ git cherry-pick 7da607da885285fe3cfc9feaf37b1608666039eb
 Find and replace btactic organisation and its suffix with our own:
 ```
 sed -i 's/unlimited_organization = "btactic-oo"/unlimited_organization = "avladimirn"/g' scripts/base.py
-sed -i 's/unlimited_tag_suffix = "-btactic"/unlimited_tag_suffix = "-test"/g' scripts/base.py
+sed -i 's/unlimited_tag_suffix = "-btactic"/unlimited_tag_suffix = "-corp"/g' scripts/base.py
 ```
 .
 
@@ -243,9 +243,9 @@ git commit --amend --no-edit
 Let's push and create appropiate tags:
 
 ```
-git push origin 9.0.4.50-test
-git tag -a 'v9.0.4.50-test' -m '9.0.4.50-test'
-git push origin v9.0.4.50-test
+git push origin 9.0.4.50-corp
+git tag -a 'v9.0.4.50-corp' -m '9.0.4.50-corp'
+git push origin v9.0.4.50-corp
 ```
 
 ### server repo update
@@ -258,7 +258,7 @@ We create a new branch based on the recently fetched tag.
 
 ```
 cd ~/onlyoffice_repos/server
-git checkout tags/v9.0.4.50 -b 9.0.4.50-test
+git checkout tags/v9.0.4.50 -b 9.0.4.50-corp
 ```
 .
 
@@ -271,9 +271,9 @@ git cherry-pick cb6100664657bc91a8bae82d005f00dcc0092a9c
 Let's push and create appropiate tags:
 
 ```
-git push origin 9.0.4.50-test
-git tag -a 'v9.0.4.50-test' -m '9.0.4.50-test'
-git push origin v9.0.4.50-test
+git push origin 9.0.4.50-corp
+git tag -a 'v9.0.4.50-corp' -m '9.0.4.50-corp'
+git push origin v9.0.4.50-corp
 ```
 
 ### web-apps repo update
@@ -286,7 +286,7 @@ We create a new branch based on the recently fetched tag.
 
 ```
 cd ~/onlyoffice_repos/web-apps
-git checkout tags/v9.0.4.50 -b 9.0.4.50-test
+git checkout tags/v9.0.4.50 -b 9.0.4.50-corp
 ```
 .
 
@@ -299,9 +299,9 @@ git cherry-pick 2d186b887bd1f445ec038bd9586ba7da3471ba05
 Let's push and create appropiate tags:
 
 ```
-git push origin 9.0.4.50-test
-git tag -a 'v9.0.4.50-test' -m '9.0.4.50-test'
-git push origin v9.0.4.50-test
+git push origin 9.0.4.50-corp
+git tag -a 'v9.0.4.50-corp' -m '9.0.4.50-corp'
+git push origin v9.0.4.50-corp
 ```
 
 ## Decide where to build
@@ -334,7 +334,7 @@ Be aware of RHEL 8 based distributions. Search for a [docker-ce howto](https://c
 
 ### Docker setup
 
-*Note: The commands for this Docker setup need to be run as either root user or a user that it's part of the sudo group, usually the admin user.*
+*Note: The commands for this Docker setup need to be run as either  user or a user that it's part of the sudo group, usually the admin user.*
 
 #### Install docker prerequisites
 
@@ -365,28 +365,28 @@ sudo apt-get install docker-ce
 ### Docker user - Creation
 
 ```
-sudo usermod -a -G docker BUILDER
+sudo usermod -a -G docker root
 ```
 
 ### Docker user - Re-login
 
-In order to be able to use Docker properly from `BUILDER` user you might need to logout and then login to your user.
+In order to be able to use Docker properly from `root` user you might need to logout and then login to your user.
 You might find how to enforce the user Docker group rights without logging out if you search enough but most of the times it's easier to just logout and login.
 
 ### Docker user - Hello world
 
-Also make sure to run the usual 'Hello world' docker examples under the `BUILDER` user.
+Also make sure to run the usual 'Hello world' docker examples under the `root` user.
 These 'Hello world' docker examples are usually explained in most of the docker installation manuals.
 If 'Hello world' docker example does not work as expected then building thanks to our Dockerfiles will definitely not work.
 
 ### Git ssh keys
 
-*Note: The commands below need to be run as the `BUILDER` user.*
+*Note: The commands below need to be run as the `root` user.*
 
 You need to run the command below in order to create a key.
 
 ```
-ssh-keygen -t rsa -b 4096 -C "BUILDER@domain.com"
+ssh-keygen -t rsa -b 4096 -C "root@domain.com"
 ```
 
 the email address needs to be the one used for your GitHub account.
@@ -406,7 +406,7 @@ should do it in most of the Debian/Ubuntu systems so that you can later use Git.
 
 ### Build everything
 
-As the `BUILDER` user run:
+As the `root` user run:
 
 ```
 mkdir ~/build-oo
@@ -415,12 +415,12 @@ git clone https://github.com/avladimirn/unlimited-onlyoffice-package-builder
 cd unlimited-onlyoffice-package-builder
 git checkout v0.0.1
 # Ignore detached HEAD message
-./onlyoffice-package-builder.sh --product-version=9.0.4 --build-number=50 --unlimited-organization=avladimirn --tag-suffix=-test --debian-package-suffix=-test
+./onlyoffice-package-builder.sh --product-version=9.0.4 --build-number=50 --unlimited-organization=avladimirn --tag-suffix=-corp --debian-package-suffix=-corp
 ```
 
 ### Final deb package
 
-The final `onlyoffice-documentserver_9.0.4-50-test_amd64.deb` deb package can be found at: `~/build-oo/unlimited-onlyoffice-package-builder/document-server-package/deb/` directory.
+The final `onlyoffice-documentserver_9.0.4-50-corp_amd64.deb` deb package can be found at: `~/build-oo/unlimited-onlyoffice-package-builder/document-server-package/deb/` directory.
 
 If you wanted to build in your own VPS **you are done.**
 
@@ -435,10 +435,10 @@ Visit [https://github.com/avladimirn/unlimited-onlyoffice-package-builder/action
 ```
 cd ~/onlyoffice_repos/unlimited-onlyoffice-package-builder
 git checkout main
-sed -i 's/DEBIAN_PACKAGE_SUFFIX: -btactic/DEBIAN_PACKAGE_SUFFIX: -test/g' .github/workflows/build-release-debian-11.yml
-sed -i 's/TAG_SUFFIX: -btactic/TAG_SUFFIX: -test/g' .github/workflows/build-release-debian-11.yml
+sed -i 's/DEBIAN_PACKAGE_SUFFIX: -btactic/DEBIAN_PACKAGE_SUFFIX: -corp/g' .github/workflows/build-release-debian-11.yml
+sed -i 's/TAG_SUFFIX: -btactic/TAG_SUFFIX: -corp/g' .github/workflows/build-release-debian-11.yml
 git add .github/workflows/build-release-debian-11.yml
-git commit -m 'Use test as a suffix in Github Actions'
+git commit -m 'Use corp as a suffix in Github Actions'
 git push origin main
 ```
 
